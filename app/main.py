@@ -1,20 +1,32 @@
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 from iam import (
-    UserService, UserCreateRequest, UserCreateResponse, UserProfile,
-    UserAlreadyExistsError, UserNotFoundError
+    UserService, UserCreateRequest, UserCreateResponse, UserProfile, UserUpdateRequest,
+    UserAlreadyExistsError, UserNotFoundError,
+    InMemoryUserRepository, UserRepository
 )
 
 load_dotenv()
 
 # TODO app context? + For larger apps, consider using FastAPI's `Depends` for dependency injection
 app: FastAPI = FastAPI()
-user_service = UserService()
+
+# --- DEPENDENCY INJECTION SETUP / SINGLETON REPOs ---
+
+_dummy_repo = InMemoryUserRepository()
+
+
+def get_user_repo() -> UserRepository:
+    return _dummy_repo
+
+
+def get_user_service(repo: UserRepository = Depends(get_user_repo)) -> UserService:
+    return UserService(user_repo=repo)
 
 
 # --- CUSTOM EXCEPTION HANDLERS ---
@@ -73,28 +85,47 @@ def home_page():
 
 # --- IAM ENDPOINTS ---
 
-@app.get("/users", response_model=list[UserProfile])
-def list_users():
-    """Retrieves a list of all users."""
+@app.get("/api/users", response_model=list[UserProfile])
+def list_users(user_service: UserService = Depends(get_user_service)) -> list[UserProfile]:
+    """ Retrieves a list of all users. """
+
     return user_service.get_all_users()
 
 
-@app.post("/users", response_model=UserCreateResponse, status_code=201)
-def create_user(user: UserCreateRequest):
+@app.post("/api/users", response_model=UserCreateResponse, status_code=201)
+def create_user(user: UserCreateRequest,
+                user_service: UserService = Depends(get_user_service)) -> UserCreateResponse:
+    """ Creates a new user and returns with ID, status. """
+
     return user_service.create_user(user)
 
 
-@app.get("/users/{user_id}", response_model=UserProfile)
-def get_user(user_id: str):
+@app.get("/api/users/{user_id}", response_model=UserProfile)
+def get_user(user_id: str,
+             user_service: UserService = Depends(get_user_service)) -> UserProfile:
+    """ Retrieves a full user profile by ID. """
+
     user = user_service.get_user(user_id)
     if user is None:
         raise UserNotFoundError()
     return user
 
 
-@app.delete("/users/{user_id}", response_model=UserCreateResponse)
-def delete_user(user_id: str):
-    return user_service.delete_user(user_id)
+@app.delete("/api/users/{user_id}", status_code=204)
+def delete_user(user_id: str,
+                user_service: UserService = Depends(get_user_service)):
+    """ Deletes a user by ID. """
+
+    user_service.delete_user(user_id)
+
+
+@app.patch("/api/users/{user_id}", response_model=UserProfile)
+def update_user(user_id: str,
+                user_update: UserUpdateRequest,
+                user_service: UserService = Depends(get_user_service)) -> UserProfile:
+    """ Updates an existing user's username and status. """
+
+    return user_service.update_user(user_id, user_update)
 
 
 if __name__ == '__main__':

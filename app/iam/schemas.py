@@ -35,6 +35,11 @@ class UserCreateResponse(BaseModel):
     status: UserStatus
 
 
+class UserUpdateRequest(BaseModel):
+    username: str
+    status: UserStatus = UserStatus.INACTIVE
+
+
 class UserProfile(BaseModel):
     user_id: str
     username: str

@@ -1,18 +1,17 @@
 import uuid
 
 from .exceptions import UserAlreadyExistsError, UserNotFoundError
-from .schemas import UserCreateRequest, UserCreateResponse, UserStatus, UserProfile
+from .repositories import UserRepository
+from .schemas import UserCreateRequest, UserCreateResponse, UserStatus, UserProfile, UserUpdateRequest
 
 
 class UserService:
-    def __init__(self):
-        # TODO dummy in-memory storage
-        self._users: dict[str, UserProfile] = {}
+    def __init__(self, user_repo: UserRepository):
+        self.user_repo = user_repo
 
     def create_user(self, request: UserCreateRequest) -> UserCreateResponse:
-        for existing_user in self._users.values():
-            if existing_user.email == request.email:
-                raise UserAlreadyExistsError("email")
+        if self.user_repo.exists_by_email(request.email):
+            raise UserAlreadyExistsError("email")
 
         new_id = str(uuid.uuid4())
 
@@ -25,22 +24,43 @@ class UserService:
             # status, created_at will use their default values
         )
 
-        self._users[new_id] = profile
+        self.user_repo.save(profile)
 
         return UserCreateResponse(user_id=profile.user_id, status=profile.status)
 
     def get_user(self, user_id: str) -> UserProfile | None:
-        return self._users.get(user_id)
+        # TODO rights?
+        user = self.user_repo.get_by_id(user_id)
+        if not user:
+            raise UserNotFoundError()
+        return user
 
     def get_all_users(self) -> list[UserProfile]:
-        return list(self._users.values())
+        # TODO rights?
+        return self.user_repo.get_all()
 
-    def delete_user(self, user_id: str) -> UserCreateResponse:
-        if user_id not in self._users:
+    def update_user(self, user_id: str, request: UserUpdateRequest) -> UserProfile:
+        # TODO rights?
+        user = self.user_repo.get_by_id(user_id)
+        if not user:
             raise UserNotFoundError()
 
-        user = self._users[user_id]
+        updated_user = user.model_copy(update={
+            "username": request.username,
+            "status": request.status
+        })
+
+        self.user_repo.update(updated_user)
+        return updated_user
+
+    def delete_user(self, user_id: str) -> UserCreateResponse:
+        # TODO rights?
+        user = self.user_repo.get_by_id(user_id)
+        if not user:
+            raise UserNotFoundError()
+
         updated_user = user.model_copy(update={"status": UserStatus.DELETED})
-        self._users[user_id] = updated_user
+
+        self.user_repo.update(updated_user)
 
         return UserCreateResponse(user_id=updated_user.user_id, status=updated_user.status)
