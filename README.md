@@ -7,7 +7,7 @@
 
 ### How to build
 
-```
+```shell
 pip install -r requirements.txt
 ```
 
