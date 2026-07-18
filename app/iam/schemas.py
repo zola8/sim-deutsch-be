@@ -4,6 +4,12 @@ from typing import List
 
 from pydantic import BaseModel, EmailStr, model_validator, Field
 
+# Validation Rules
+MIN_PASSWORD_LENGTH = 8
+MAX_PASSWORD_LENGTH = 20
+MIN_USERNAME_LENGTH = 5
+MAX_USERNAME_LENGTH = 100
+
 
 class UserStatus(str, Enum):
     ACTIVE = "ACTIVE"
@@ -24,9 +30,15 @@ class UserCreateRequest(BaseModel):
         return self
 
     @model_validator(mode='after')
-    def check_passwords_is_not_empty(self):
-        if not len(self.password) >= 8:
-            raise ValueError('Passwords length should be at least 8 characters')
+    def check_password_length(self):
+        if len(self.password) < MIN_PASSWORD_LENGTH or len(self.password) > MAX_PASSWORD_LENGTH:
+            raise ValueError('Passwords length should be between 8-20 characters')
+        return self
+
+    @model_validator(mode='after')
+    def check_username_length(self):
+        if len(self.username) < MIN_USERNAME_LENGTH or len(self.username) > MAX_USERNAME_LENGTH:
+            raise ValueError('Username should be between 5-100 characters')
         return self
 
 
@@ -38,6 +50,12 @@ class UserCreateResponse(BaseModel):
 class UserUpdateRequest(BaseModel):
     username: str
     status: UserStatus = UserStatus.INACTIVE
+
+    @model_validator(mode='after')
+    def check_username_length(self):
+        if len(self.username) < MIN_USERNAME_LENGTH or len(self.username) > MAX_USERNAME_LENGTH:
+            raise ValueError('Username should be between 5-100 characters')
+        return self
 
 
 class UserProfile(BaseModel):

@@ -4,7 +4,6 @@ from .exceptions import UserAlreadyExistsError, UserNotFoundError
 from .repositories import UserRepository
 from .schemas import UserCreateRequest, UserCreateResponse, UserStatus, UserProfile, UserUpdateRequest
 
-
 class UserService:
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
