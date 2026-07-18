@@ -1,36 +1,25 @@
 import uvicorn
 from dotenv import load_dotenv
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
+from api_users import users_router, user_not_found_handler, user_exists_handler
 from iam import (
-    UserService, UserCreateRequest, UserCreateResponse, UserProfile, UserUpdateRequest,
-    UserAlreadyExistsError, UserNotFoundError,
-    InMemoryUserRepository, UserRepository
+    UserAlreadyExistsError, UserNotFoundError
 )
 
 load_dotenv()
 
-# TODO app context? + For larger apps, consider using FastAPI's `Depends` for dependency injection
+# --- FASTAPI API ROUTERS / EXCEPTION HANDLERS ---
 app: FastAPI = FastAPI()
 
-# --- DEPENDENCY INJECTION SETUP / SINGLETON REPOs ---
+app.include_router(users_router)
 
-_dummy_repo = InMemoryUserRepository()
+app.add_exception_handler(UserNotFoundError, user_not_found_handler)
+app.add_exception_handler(UserAlreadyExistsError, user_exists_handler)
 
-
-def get_user_repo() -> UserRepository:
-    return _dummy_repo
-
-
-def get_user_service(repo: UserRepository = Depends(get_user_repo)) -> UserService:
-    return UserService(user_repo=repo)
-
-
-# --- CUSTOM EXCEPTION HANDLERS ---
-# These remain the same and will automatically catch the new password/email validations
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -50,82 +39,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     )
 
 
-@app.exception_handler(UserAlreadyExistsError)
-async def user_exists_handler(request: Request, exc: UserAlreadyExistsError):
-    return JSONResponse(
-        status_code=409,
-        content={
-            "success": False,
-            "error_code": "USER_EXISTS",
-            "message": f"Creation failed: A user with this {exc.field} already exists.",
-            "details": [{"field": exc.field, "message": "Must be unique"}]
-        }
-    )
-
-
-@app.exception_handler(UserNotFoundError)
-async def user_not_found_handler(request: Request, exc: UserNotFoundError):
-    return JSONResponse(
-        status_code=404,
-        content={
-            "success": False,
-            "error_code": "USER_NOT_FOUND",
-            "message": "The requested user does not exist.",
-            "details": []
-        }
-    )
-
-
 # --- ROUTES ---
 
 @app.get("/")
 def home_page():
     return {"status": "OK"}
-
-
-# --- IAM ENDPOINTS ---
-
-@app.get("/api/users", response_model=list[UserProfile])
-def list_users(user_service: UserService = Depends(get_user_service)) -> list[UserProfile]:
-    """ Retrieves a list of all users. """
-
-    return user_service.get_all_users()
-
-
-@app.post("/api/users", response_model=UserCreateResponse, status_code=201)
-def create_user(user: UserCreateRequest,
-                user_service: UserService = Depends(get_user_service)) -> UserCreateResponse:
-    """ Creates a new user and returns with ID, status. """
-
-    return user_service.create_user(user)
-
-
-@app.get("/api/users/{user_id}", response_model=UserProfile)
-def get_user(user_id: str,
-             user_service: UserService = Depends(get_user_service)) -> UserProfile:
-    """ Retrieves a full user profile by ID. """
-
-    user = user_service.get_user(user_id)
-    if user is None:
-        raise UserNotFoundError()
-    return user
-
-
-@app.delete("/api/users/{user_id}", status_code=204)
-def delete_user(user_id: str,
-                user_service: UserService = Depends(get_user_service)):
-    """ Deletes a user by ID. """
-
-    user_service.delete_user(user_id)
-
-
-@app.patch("/api/users/{user_id}", response_model=UserProfile)
-def update_user(user_id: str,
-                user_update: UserUpdateRequest,
-                user_service: UserService = Depends(get_user_service)) -> UserProfile:
-    """ Updates an existing user's username and status. """
-
-    return user_service.update_user(user_id, user_update)
 
 
 if __name__ == '__main__':

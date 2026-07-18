@@ -5,4 +5,7 @@ class UserAlreadyExistsError(Exception):
 
 
 class UserNotFoundError(Exception):
-    pass
+    def __init__(self, user_id: str = None):
+        self.user_id = user_id
+        self.message = f"User with id {user_id} not found"
+        super().__init__(self.message)

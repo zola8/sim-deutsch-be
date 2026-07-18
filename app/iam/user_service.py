@@ -31,7 +31,7 @@ class UserService:
         # TODO rights?
         user = self.user_repo.get_by_id(user_id)
         if not user:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id)
         return user
 
     def get_all_users(self) -> list[UserProfile]:
@@ -42,7 +42,7 @@ class UserService:
         # TODO rights?
         user = self.user_repo.get_by_id(user_id)
         if not user:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id)
 
         updated_user = user.model_copy(update={
             "username": request.username,
@@ -56,7 +56,7 @@ class UserService:
         # TODO rights?
         user = self.user_repo.get_by_id(user_id)
         if not user:
-            raise UserNotFoundError()
+            raise UserNotFoundError(user_id)
 
         updated_user = user.model_copy(update={"status": UserStatus.DELETED})
 
