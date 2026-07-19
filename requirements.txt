@@ -6,4 +6,5 @@ email-validator>=2.3.0
 pytest>=9.1.1
 pydantic_settings>=2.14.2
 python-json-logger>=4.1.0
+httpx2>=2.7.0
 

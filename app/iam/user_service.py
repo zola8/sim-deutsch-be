@@ -1,8 +1,13 @@
+import logging
 import uuid
 
 from .exceptions import UserAlreadyExistsError, UserNotFoundError
 from .repositories import UserRepository
 from .schemas import UserCreateRequest, UserCreateResponse, UserStatus, UserProfile, UserUpdateRequest
+
+
+logger = logging.getLogger(__name__)
+
 
 class UserService:
     def __init__(self, user_repo: UserRepository):
@@ -29,6 +34,7 @@ class UserService:
 
     def get_user(self, user_id: str) -> UserProfile | None:
         # TODO rights?
+        logger.debug(f"Attempting to fetch user with ID: {user_id}")
         user = self.user_repo.get_by_id(user_id)
         if not user:
             raise UserNotFoundError(user_id)

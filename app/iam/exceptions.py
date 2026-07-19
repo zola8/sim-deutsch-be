@@ -1,11 +1,12 @@
 class UserAlreadyExistsError(Exception):
     def __init__(self, field: str):
         self.field = field
-        super().__init__(f"User {field} already exists")
+        self.message = f"User {field} already exists"
+        super().__init__(self.message)
 
 
 class UserNotFoundError(Exception):
-    def __init__(self, user_id: str = None):
+    def __init__(self, user_id: str | None = None):
         self.user_id = user_id
-        self.message = f"User with id {user_id} not found"
+        self.message = f"User with id '{user_id}' not found" if user_id else "User not found"
         super().__init__(self.message)

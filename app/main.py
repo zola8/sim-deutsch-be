@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.core.exceptions import register_exception_handlers
+from app.core.exception_handlers import register_exception_handlers
 from app.core.lifespan import lifespan
 from app.iam.router import iam_router
 
