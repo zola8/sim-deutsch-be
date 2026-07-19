@@ -3,8 +3,8 @@ import uuid
 
 from .exceptions import UserAlreadyExistsError, UserNotFoundError
 from .repositories import UserRepository
-from .schemas import UserCreateRequest, UserCreateResponse, UserStatus, UserProfile, UserUpdateRequest
-
+from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
+from .schema_user_profile import UserStatus, UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,6 @@ class UserService:
             user_id=new_id,
             username=request.username,
             email=request.email,
-            password=request.password,
             roles=['USER'],
             # status, created_at will use their default values
         )

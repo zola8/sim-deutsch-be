@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
-from . import (
-    UserService, UserProfile, UserCreateResponse, UserCreateRequest, UserUpdateRequest,
-    UserAlreadyExistsError, UserNotFoundError, InMemoryUserRepository, UserRepository
-)
+from .exceptions import UserNotFoundError, UserAlreadyExistsError
+from .repositories.base import UserRepository
+from .repositories.in_memory import InMemoryUserRepository
+from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
+from .schema_user_profile import UserProfile
+from .user_service import UserService
 
 iam_router = APIRouter(prefix="/api/users", tags=["users"])
 

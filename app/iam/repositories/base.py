@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from pydantic import EmailStr
 
-from ..schemas import UserProfile
+from ..schema_user_profile import UserProfile
 
 
 class UserRepository(ABC):

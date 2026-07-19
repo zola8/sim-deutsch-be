@@ -1,7 +1,7 @@
 from typing import Optional, List
 
 from .base import UserRepository
-from ..schemas import UserProfile
+from ..schema_user_profile import UserProfile
 
 
 class InMemoryUserRepository(UserRepository):
