@@ -18,10 +18,14 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "DEBUG"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
     LOG_FORMAT: str = "dev"  # Options: "dev" or "prod" (JSON)
 
-    # TODO Future DB Settings
-    # DATABASE_URL: str = "sqlite:///./app.db"
+    DATABASE_URL: str = "sqlite:///./sim_deutsch.db"
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore"  # Safely ignores any extra variables in .env that aren't defined here
+    )
 
 
 settings = Settings()
