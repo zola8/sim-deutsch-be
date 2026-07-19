@@ -1,63 +1,59 @@
 import uvicorn
-from dotenv import load_dotenv
 from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse
 
-from api_users import users_router, user_not_found_handler, user_exists_handler
-from iam import UserAlreadyExistsError, UserNotFoundError
-
-# --- ENVIRONMENTS ---
-
-load_dotenv()
-
-# --- FASTAPI API ROUTERS / EXCEPTION HANDLERS ---
-app: FastAPI = FastAPI()
-
-app.include_router(users_router)
-
-app.add_exception_handler(UserNotFoundError, user_not_found_handler)
-app.add_exception_handler(UserAlreadyExistsError, user_exists_handler)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost",
-        "http://localhost:5173",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+from app.core.config import settings
+from app.core.exceptions import register_exception_handlers
+from app.core.lifespan import lifespan
+from app.iam.router import iam_router
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    details = []
-    for error in exc.errors():
-        field = ".".join(str(loc) for loc in error["loc"]) if error["loc"] else None
-        details.append({"field": field, "message": error["msg"]})
-
-    return JSONResponse(
-        status_code=400,
-        content={
-            "success": False,
-            "error_code": "VALIDATION_ERROR",
-            "message": "Invalid request payload.",
-            "details": details
-        },
+# --- APP FACTORY ---
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title=settings.APP_NAME,
+        version=settings.APP_VERSION,
+        description="Backend API for Sim-Deutsch application",
+        lifespan=lifespan,
     )
 
+    # --- MIDDLEWARE ---
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-# --- ROUTES ---
+    # --- ROUTERS ---
+    app.include_router(iam_router, prefix="/api/v1/iam")
+
+    # --- EXCEPTION HANDLERS ---
+    register_exception_handlers(app)
+
+    return app
+
+
+# Create the app instance
+app = create_app()
+
 
 @app.get("/")
-def home_page():
-    return {"status": "OK"}
+def index_page():
+    return {
+        "APP_NAME": settings.APP_NAME,
+        "APP_VERSION": settings.APP_VERSION,
+        "STATUS": "OK",
+    }
 
 
+# --- ENTRY POINT ---
 if __name__ == '__main__':
-    print('http://localhost:8080')
-    uvicorn.run(app, host="0.0.0.0", port=8080, forwarded_allow_ips="*")
+    print(f"Starting server on http://localhost:{settings.PORT}")
+    uvicorn.run(
+        "app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=settings.DEBUG,
+    )

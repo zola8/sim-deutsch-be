@@ -2,25 +2,34 @@ from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
-from app.services import get_user_service
-from iam import (
-    UserService, UserCreateRequest, UserCreateResponse, UserProfile, UserUpdateRequest,
-    UserNotFoundError, UserAlreadyExistsError
+from . import (
+    UserService, UserProfile, UserCreateResponse, UserCreateRequest, UserUpdateRequest,
+    UserAlreadyExistsError, UserNotFoundError, InMemoryUserRepository, UserRepository
 )
 
-users_router = APIRouter(prefix="/api/users", tags=["users"])
+iam_router = APIRouter(prefix="/api/users", tags=["users"])
+
+_dummy_repo = InMemoryUserRepository()
+
+
+def get_user_repo() -> UserRepository:
+    return _dummy_repo
+
+
+def get_user_service(repo: UserRepository = Depends(get_user_repo)) -> UserService:
+    return UserService(user_repo=repo)
 
 
 # --- IAM ENDPOINTS ---
 
-@users_router.get("/", response_model=list[UserProfile])
+@iam_router.get("/", response_model=list[UserProfile])
 def list_users(user_service: UserService = Depends(get_user_service)) -> list[UserProfile]:
     """ Retrieves a list of all users. """
 
     return user_service.get_all_users()
 
 
-@users_router.post("/", response_model=UserCreateResponse, status_code=201)
+@iam_router.post("/", response_model=UserCreateResponse, status_code=201)
 def create_user(user: UserCreateRequest,
                 user_service: UserService = Depends(get_user_service)) -> UserCreateResponse:
     """ Creates a new user and returns with ID, status. """
@@ -28,7 +37,7 @@ def create_user(user: UserCreateRequest,
     return user_service.create_user(user)
 
 
-@users_router.get("/{user_id}", response_model=UserProfile)
+@iam_router.get("/{user_id}", response_model=UserProfile)
 def get_user(user_id: str,
              user_service: UserService = Depends(get_user_service)) -> UserProfile:
     """ Retrieves a full user profile by ID. """
@@ -39,7 +48,7 @@ def get_user(user_id: str,
     return user
 
 
-@users_router.delete("/{user_id}", status_code=204)
+@iam_router.delete("/{user_id}", status_code=204)
 def delete_user(user_id: str,
                 user_service: UserService = Depends(get_user_service)):
     """ Deletes a user by ID. """
@@ -47,7 +56,7 @@ def delete_user(user_id: str,
     user_service.delete_user(user_id)
 
 
-@users_router.patch("/{user_id}", response_model=UserProfile)
+@iam_router.patch("/{user_id}", response_model=UserProfile)
 def update_user(user_id: str,
                 user_update: UserUpdateRequest,
                 user_service: UserService = Depends(get_user_service)) -> UserProfile:
