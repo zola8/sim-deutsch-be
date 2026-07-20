@@ -3,8 +3,8 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 from .exceptions import UserNotFoundError, UserAlreadyExistsError
-from .repositories.base import UserRepository
-from .repositories.in_memory import InMemoryUserRepository
+from .repository_base import UserRepository
+from .repository_in_memory import InMemoryUserRepository
 from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
 from .schema_user_profile import UserProfile
 from .user_service import UserService

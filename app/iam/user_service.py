@@ -2,7 +2,7 @@ import logging
 import uuid
 
 from .exceptions import UserAlreadyExistsError, UserNotFoundError
-from .repositories import UserRepository
+from .repository_in_memory import UserRepository
 from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
 from .schema_user_profile import UserStatus, UserProfile
 
