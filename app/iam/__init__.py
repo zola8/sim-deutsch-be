@@ -1,5 +1,7 @@
 from .exceptions import UserAlreadyExistsError, UserNotFoundError
 from .repository_in_memory import InMemoryUserRepository, InMemoryCredentialRepository
+from .repository_sql_credential import SQLAlchemyCredentialRepository
+from .repository_sql_user_profile import SQLAlchemyUserRepository
 from .router import iam_router, user_exists_handler, user_not_found_handler
 from .schema_enums import CredentialType
 from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
@@ -23,4 +25,6 @@ __all__ = [
     "user_not_found_handler",
     "InMemoryUserRepository",
     "InMemoryCredentialRepository",
+    "SQLAlchemyUserRepository",
+    "SQLAlchemyCredentialRepository",
 ]

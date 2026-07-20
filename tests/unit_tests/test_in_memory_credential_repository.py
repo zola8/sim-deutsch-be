@@ -1,53 +1,8 @@
-# tests/unit/repositories/test_in_memory_credential_repository.py
-
 from datetime import datetime, timezone
 
 import pytest
 
-from app.iam import UserProfileCredential, CredentialType, InMemoryCredentialRepository
-
-
-@pytest.fixture
-def credential_repo():
-    """Fresh repository instance for each test."""
-    return InMemoryCredentialRepository()
-
-
-@pytest.fixture
-def sample_credential():
-    """Sample credential for testing."""
-    return UserProfileCredential(
-        user_id="user-123",
-        credential_type=CredentialType.PASSWORD,
-        credential_identifier="hashed_password_123",
-        credential_secret="salt_abc",
-        is_verified=True,
-        created_at=datetime.now(timezone.utc).isoformat()
-    )
-
-
-@pytest.fixture
-def oauth_credential():
-    """Sample OAuth credential for testing."""
-    return UserProfileCredential(
-        user_id="user-123",
-        credential_type=CredentialType.OPENID_GOOGLE,
-        credential_identifier="google-oauth-id-456",
-        is_verified=True,
-        created_at=datetime.now(timezone.utc).isoformat()
-    )
-
-
-@pytest.fixture
-def another_user_credential():
-    """Credential for a different user."""
-    return UserProfileCredential(
-        user_id="user-456",
-        credential_type=CredentialType.PASSWORD,
-        credential_identifier="hashed_password_789",
-        is_verified=False,
-        created_at=datetime.now(timezone.utc).isoformat()
-    )
+from app.iam import UserProfileCredential, CredentialType
 
 
 class TestCreateCredential:

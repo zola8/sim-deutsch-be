@@ -1,42 +1,6 @@
-# tests/unit/repositories/test_in_memory_user_repository.py
-
-from datetime import datetime, timezone
-
 import pytest
 
-from app.iam import UserProfile, UserStatus, InMemoryUserRepository
-
-
-@pytest.fixture
-def user_repo():
-    """Fresh repository instance for each test."""
-    return InMemoryUserRepository()
-
-
-@pytest.fixture
-def sample_user():
-    """Sample user profile for testing."""
-    return UserProfile(
-        user_id="user-123",
-        username="testuser",
-        email="test@example.com",
-        status=UserStatus.INACTIVE,
-        created_at=datetime.now(timezone.utc).isoformat(),
-        roles=["USER"]
-    )
-
-
-@pytest.fixture
-def another_user():
-    """Another sample user for multi-user tests."""
-    return UserProfile(
-        user_id="user-456",
-        username="anotheruser",
-        email="another@example.com",
-        status=UserStatus.ACTIVE,
-        created_at=datetime.now(timezone.utc).isoformat(),
-        roles=["USER", "ADMIN"]
-    )
+from app.iam import UserStatus
 
 
 class TestCreateUser:

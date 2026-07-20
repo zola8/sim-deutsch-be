@@ -42,14 +42,13 @@ def setup_database():
     logger.info("Database setup complete.")
 
 
-
 def get_db():
-    """
-    Dependency generator for FastAPI routes.
-    Yields a database session and ensures it is closed after the request.
-    """
     db = SessionLocal()
     try:
         yield db
+        db.commit()  # Commit if no exceptions occurred
+    except Exception:
+        db.rollback()  # Rollback on error
+        raise
     finally:
         db.close()
