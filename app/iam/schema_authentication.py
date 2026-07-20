@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr, model_validator
 
-from .schema_enums import UserStatus, MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH, MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH
-from .schema_user_profile import UserProfile
+from app.iam.schema_enums import MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH, MIN_USERNAME_LENGTH, \
+    UserStatus
+from app.iam.schema_user_profile import UserProfile
 
 
 class RegisterWithPasswordRequest(BaseModel):

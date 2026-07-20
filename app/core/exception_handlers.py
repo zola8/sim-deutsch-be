@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from ..iam import UserNotFoundError, UserAlreadyExistsError
+from app.iam.exceptions import UserNotFoundError, UserAlreadyExistsError, AuthenticationError
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +51,19 @@ def register_exception_handlers(app: FastAPI):
                 "error_code": "VALIDATION_ERROR",
                 "message": "Invalid request payload.",
                 "details": details
+            }
+        )
+
+    @app.exception_handler(AuthenticationError)
+    async def authentication_error_handler(request: Request, exc: AuthenticationError):
+        logger.warning(f"Authentication failed: {exc.message}")
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={
+                "success": False,
+                "error_code": "AUTHENTICATION_FAILED",
+                "message": exc.message,
+                "details": None
             }
         )
 

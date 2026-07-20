@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, model_validator
 
-from .schema_enums import UserStatus, MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH
+from app.iam.schema_enums import MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH, UserStatus
 
 
 class UserCreateRequest(BaseModel):

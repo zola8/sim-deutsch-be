@@ -1,93 +1,61 @@
-from fastapi import APIRouter, Depends
-from fastapi.requests import Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException
 
-from .exceptions import UserNotFoundError, UserAlreadyExistsError
-from .repository_base import UserRepository
-from .repository_in_memory import InMemoryUserRepository
-from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
-from .schema_user_profile import UserProfile
-from .service_user import UserService
+from app.dependencies import UserServiceDep, AuthServiceDep
+from app.iam.schema_authentication import RegisterWithPasswordRequest, LoginWithPasswordRequest
+from app.iam.schema_user_management import UserCreateRequest, UserUpdateRequest
+from app.iam.schema_user_profile import UserProfile
 
-iam_router = APIRouter(prefix="/api/users", tags=["users"])
-
-_dummy_repo = InMemoryUserRepository()
+router = APIRouter()
 
 
-def get_user_repo() -> UserRepository:
-    return _dummy_repo
+# --- User Management Endpoints (Admin) ---
+
+@router.post("/users", response_model=UserProfile)
+def create_user(request: UserCreateRequest, user_service: UserServiceDep):
+    return user_service.create_user(request)
 
 
-def get_user_service(repo: UserRepository = Depends(get_user_repo)) -> UserService:
-    return UserService(user_repo=repo)
+@router.get("/users/{user_id}", response_model=UserProfile)
+def get_user(user_id: str, user_service: UserServiceDep):
+    return user_service.get_user(user_id)
 
 
-# --- IAM ENDPOINTS ---
-
-@iam_router.get("/", response_model=list[UserProfile])
-def list_users(user_service: UserService = Depends(get_user_service)) -> list[UserProfile]:
-    """ Retrieves a list of all users. """
-
+@router.get("/users", response_model=list[UserProfile])
+def get_all_users(user_service: UserServiceDep):
     return user_service.get_all_users()
 
 
-@iam_router.post("/", response_model=UserCreateResponse, status_code=201)
-def create_user(user: UserCreateRequest,
-                user_service: UserService = Depends(get_user_service)) -> UserCreateResponse:
-    """ Creates a new user and returns with ID, status. """
-
-    return user_service.create_user(user)
+@router.put("/users/{user_id}", response_model=UserProfile)
+def update_user(user_id: str, request: UserUpdateRequest, user_service: UserServiceDep):
+    return user_service.update_user(user_id, request)
 
 
-@iam_router.get("/{user_id}", response_model=UserProfile)
-def get_user(user_id: str,
-             user_service: UserService = Depends(get_user_service)) -> UserProfile:
-    """ Retrieves a full user profile by ID. """
-
-    user = user_service.get_user(user_id)
-    if user is None:
-        raise UserNotFoundError()
-    return user
+@router.delete("/users/{user_id}")
+def delete_user(user_id: str, user_service: UserServiceDep):
+    deleted = user_service.delete_user(user_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"success": True}
 
 
-@iam_router.delete("/{user_id}", status_code=204)
-def delete_user(user_id: str,
-                user_service: UserService = Depends(get_user_service)):
-    """ Deletes a user by ID. """
+# --- Authentication Endpoints (User Self-Service) ---
 
-    user_service.delete_user(user_id)
-
-
-@iam_router.patch("/{user_id}", response_model=UserProfile)
-def update_user(user_id: str,
-                user_update: UserUpdateRequest,
-                user_service: UserService = Depends(get_user_service)) -> UserProfile:
-    """ Updates an existing user's username and status. """
-
-    return user_service.update_user(user_id, user_update)
+@router.post("/auth/register")
+def register(request: RegisterWithPasswordRequest, auth_service: AuthServiceDep):
+    user = auth_service.register_with_password(request)
+    return {
+        "user_id": user.user_id,
+        "status": user.status,
+        "message": "Registration successful"
+    }
 
 
-# --- CUSTOM EXCEPTION HANDLERS ---
-
-async def user_exists_handler(request: Request, exc: UserAlreadyExistsError):
-    return JSONResponse(
-        status_code=409,
-        content={
-            "success": False,
-            "error_code": "USER_EXISTS",
-            "message": f"Creation failed: A user with this {exc.field} already exists.",
-            "details": [{"field": exc.field, "message": "Must be unique"}]
-        }
-    )
-
-
-async def user_not_found_handler(request: Request, exc: UserNotFoundError):
-    return JSONResponse(
-        status_code=404,
-        content={
-            "success": False,
-            "error_code": "USER_NOT_FOUND",
-            "message": "The requested user does not exist.",
-            "details": []
-        }
-    )
+@router.post("/auth/login")
+def login(request: LoginWithPasswordRequest, auth_service: AuthServiceDep):
+    user = auth_service.login_with_password(request)
+    # TODO: Generate JWT token here in a later step
+    return {
+        "access_token": "placeholder-token",
+        "token_type": "bearer",
+        "user": user
+    }

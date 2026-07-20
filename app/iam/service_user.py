@@ -1,13 +1,12 @@
-# app/iam/user_service.py
-
 import logging
 import uuid
 from typing import List, Optional
 
-from .exceptions import UserNotFoundError, UserAlreadyExistsError
-from .repository_base import UserRepository
-from .schema_user_management import UserCreateRequest, UserUpdateRequest
-from .schema_user_profile import UserProfile, UserStatus
+from app.iam.exceptions import UserAlreadyExistsError, UserNotFoundError
+from app.iam.repository_base import UserRepository
+from app.iam.schema_enums import UserStatus
+from app.iam.schema_user_management import UserCreateRequest, UserUpdateRequest
+from app.iam.schema_user_profile import UserProfile
 
 logger = logging.getLogger(__name__)
 

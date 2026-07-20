@@ -1,4 +1,3 @@
-# SQLAlchemy ORM table definitions (Phase 2)
 from sqlalchemy import String, Boolean, DateTime, ForeignKey, Enum as SQLEnum, Integer
 from sqlalchemy.orm import relationship, mapped_column
 from sqlalchemy.sql import func

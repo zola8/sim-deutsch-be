@@ -3,7 +3,7 @@ from typing import List
 
 from pydantic import BaseModel, EmailStr, Field
 
-from .schema_enums import UserStatus
+from app.iam.schema_enums import UserStatus
 
 
 class UserProfile(BaseModel):

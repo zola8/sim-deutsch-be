@@ -1,11 +1,9 @@
-# app/iam/repositories/base.py
-
 from abc import ABC, abstractmethod
 from typing import Optional, List
 
-from .schema_enums import CredentialType
-from .schema_user_profile import UserProfile
-from .schema_user_profile_credential import UserProfileCredential
+from app.iam.schema_enums import CredentialType
+from app.iam.schema_user_profile import UserProfile
+from app.iam.schema_user_profile_credential import UserProfileCredential
 
 
 class UserRepository(ABC):

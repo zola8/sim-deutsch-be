@@ -1,5 +1,3 @@
-# app/core/security.py
-
 import logging
 
 import bcrypt

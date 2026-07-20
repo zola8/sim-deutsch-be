@@ -3,7 +3,7 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from .config import settings
+from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,14 @@ def setup_database():
 
 
 def get_db():
+    logger.debug(f"database.SessionLocal = {SessionLocal}")
+
+    if SessionLocal is None:
+        raise RuntimeError(
+            "Database not initialized. "
+            "Make sure lifespan is wired in main.py and setup_database() ran successfully."
+        )
+
     db = SessionLocal()
     try:
         yield db

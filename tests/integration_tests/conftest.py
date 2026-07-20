@@ -5,8 +5,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.core.database import Base
-from app.iam import SQLAlchemyUserRepository, UserProfile, UserStatus, SQLAlchemyCredentialRepository, \
-    UserProfileCredential, CredentialType
+from app.iam import (
+    SQLAlchemyUserRepository,
+    UserProfile,
+    UserStatus,
+    SQLAlchemyCredentialRepository,
+    UserProfileCredential,
+    CredentialType
+)
 
 
 @pytest.fixture

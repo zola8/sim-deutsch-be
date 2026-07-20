@@ -3,12 +3,12 @@ import uuid
 from datetime import datetime, timezone
 
 from app.core.security import PasswordHasher
-from .exceptions import UserNotFoundError, AuthenticationError, UserAlreadyExistsError
-from .repository_base import UserRepository, CredentialRepository
-from .schema_authentication import RegisterWithPasswordRequest, LoginWithPasswordRequest
-from .schema_enums import CredentialType
-from .schema_user_profile import UserProfile, UserStatus
-from .schema_user_profile_credential import UserProfileCredential
+from app.iam.exceptions import UserAlreadyExistsError, AuthenticationError, UserNotFoundError
+from app.iam.repository_base import UserRepository, CredentialRepository
+from app.iam.schema_authentication import RegisterWithPasswordRequest, LoginWithPasswordRequest
+from app.iam.schema_enums import UserStatus, CredentialType
+from app.iam.schema_user_profile import UserProfile
+from app.iam.schema_user_profile_credential import UserProfileCredential
 
 logger = logging.getLogger(__name__)
 

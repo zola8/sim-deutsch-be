@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.exception_handlers import register_exception_handlers
 from app.core.lifespan import lifespan
-from app.iam.router import iam_router
+from app.iam.router import router as iam_router
 
 
 # --- APP FACTORY ---
@@ -27,7 +27,7 @@ def create_app() -> FastAPI:
     )
 
     # --- ROUTERS ---
-    app.include_router(iam_router, prefix="/api/v1/iam")
+    app.include_router(iam_router, prefix="/api/v1")
 
     # --- EXCEPTION HANDLERS ---
     register_exception_handlers(app)
