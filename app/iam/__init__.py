@@ -7,7 +7,8 @@ from .schema_enums import CredentialType
 from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
 from .schema_user_profile import UserProfile, UserStatus
 from .schema_user_profile_credential import UserProfileCredential
-from .user_service import UserService
+from .service_auth import AuthService
+from .service_user import UserService
 
 __all__ = [
     "UserCreateRequest",
@@ -16,7 +17,6 @@ __all__ = [
     "UserProfile",
     "UserProfileCredential",
     "UserStatus",
-    "UserService",
     "CredentialType",
     "UserAlreadyExistsError",
     "UserNotFoundError",
@@ -27,4 +27,6 @@ __all__ = [
     "InMemoryCredentialRepository",
     "SQLAlchemyUserRepository",
     "SQLAlchemyCredentialRepository",
+    "UserService",
+    "AuthService",
 ]

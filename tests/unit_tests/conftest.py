@@ -6,8 +6,10 @@ from fastapi.testclient import TestClient
 from pydantic import BaseModel, EmailStr
 
 from app.core.exception_handlers import register_exception_handlers
-from app.iam import InMemoryCredentialRepository, UserProfileCredential, CredentialType, UserNotFoundError, \
-    UserAlreadyExistsError, InMemoryUserRepository, UserProfile, UserStatus
+from app.core.security import PasswordHasher
+from app.iam import (
+    InMemoryCredentialRepository, UserProfileCredential, CredentialType, UserNotFoundError,
+    UserAlreadyExistsError, InMemoryUserRepository, UserProfile, UserStatus)
 
 
 @pytest.fixture
@@ -118,3 +120,8 @@ def another_user():
         created_at=datetime.now(timezone.utc).isoformat(),
         roles=["USER", "ADMIN"]
     )
+
+
+@pytest.fixture
+def hasher():
+    return PasswordHasher()

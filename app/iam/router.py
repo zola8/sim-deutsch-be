@@ -7,7 +7,7 @@ from .repository_base import UserRepository
 from .repository_in_memory import InMemoryUserRepository
 from .schema_user_management import UserCreateRequest, UserCreateResponse, UserUpdateRequest
 from .schema_user_profile import UserProfile
-from .user_service import UserService
+from .service_user import UserService
 
 iam_router = APIRouter(prefix="/api/users", tags=["users"])
 

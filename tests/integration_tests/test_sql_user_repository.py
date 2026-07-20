@@ -38,7 +38,9 @@ class TestGetUser:
         db_session.commit()
 
         result = user_repo.get_user(sample_user.user_id)
-        assert_users_equal(result, sample_user)
+
+        # Compare everything except created_at
+        assert result.model_dump(exclude={"created_at"}) == sample_user.model_dump(exclude={"created_at"})
 
     def test_get_user_not_found_returns_none(self, user_repo):
         result = user_repo.get_user("nonexistent")
@@ -119,14 +121,3 @@ class TestDeleteUser:
 
     def test_delete_user_not_found_returns_false(self, user_repo, db_session):
         assert user_repo.delete_user("nope") is False
-
-
-def assert_users_equal(actual: UserProfile, expected: UserProfile):
-    assert actual.user_id == expected.user_id
-    assert actual.username == expected.username
-    assert actual.email == expected.email
-    assert actual.status == expected.status
-    assert actual.roles == expected.roles
-    # created_at is ignored due to timezone handling differences
-    assert actual.created_at is not None
-    assert expected.created_at is not None
