@@ -1,19 +1,14 @@
 from fastapi import APIRouter, HTTPException
 
 from app.dependencies import UserServiceDep, AuthServiceDep
-from app.iam.schema_authentication import RegisterWithPasswordRequest, LoginWithPasswordRequest
-from app.iam.schema_user_management import UserCreateRequest, UserUpdateRequest
-from app.iam.schema_user_profile import UserProfile
+from app.iam.api.schema_authentication import RegisterWithPasswordRequest, LoginWithPasswordRequest
+from app.iam.api.schema_user_management import UserUpdateRequest
+from app.iam.api.schema_user_profile import UserProfile
 
 router = APIRouter()
 
 
 # --- User Management Endpoints (Admin) ---
-
-@router.post("/users", response_model=UserProfile)
-def create_user(request: UserCreateRequest, user_service: UserServiceDep):
-    return user_service.create_user(request)
-
 
 @router.get("/users/{user_id}", response_model=UserProfile)
 def get_user(user_id: str, user_service: UserServiceDep):

@@ -6,9 +6,9 @@ from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.iam.models import UserModel
-from app.iam.repository_base import UserRepository
-from app.iam.schema_user_profile import UserProfile
+from app.iam.orm.models import UserModel
+from app.iam.orm.repository_base import UserRepository
+from app.iam.api.schema_user_profile import UserProfile
 
 logger = logging.getLogger(__name__)
 

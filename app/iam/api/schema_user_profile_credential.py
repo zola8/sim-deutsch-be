@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from app.iam.schema_enums import CredentialType
+from app.iam.api.schema_enums import CredentialType
 
 
 class UserProfileCredential(BaseModel):

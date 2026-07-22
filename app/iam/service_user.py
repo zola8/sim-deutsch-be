@@ -1,12 +1,10 @@
 import logging
-import uuid
 from typing import List, Optional
 
 from app.iam.exceptions import UserAlreadyExistsError, UserNotFoundError
-from app.iam.repository_base import UserRepository
-from app.iam.schema_enums import UserStatus
-from app.iam.schema_user_management import UserCreateRequest, UserUpdateRequest
-from app.iam.schema_user_profile import UserProfile
+from app.iam.orm.repository_base import UserRepository
+from app.iam.api.schema_user_management import UserUpdateRequest
+from app.iam.api.schema_user_profile import UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -16,34 +14,6 @@ class UserService:
 
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
-
-    def create_user(self, request: UserCreateRequest) -> UserProfile:
-        """
-        Create a new user profile.
-        Raises UserAlreadyExistsError if email or username is taken.
-        """
-        # Check for existing email
-        if self.user_repo.get_user_by_email(request.email):
-            logger.warning(f"Attempted to create user with existing email: {request.email}")
-            raise UserAlreadyExistsError(field="email")
-
-        # Check for existing username
-        if self.user_repo.get_user_by_username(request.username):
-            logger.warning(f"Attempted to create user with existing username: {request.username}")
-            raise UserAlreadyExistsError(field="username")
-
-        # Create user profile
-        user = UserProfile(
-            user_id=str(uuid.uuid4()),
-            username=request.username,
-            email=request.email,
-            status=UserStatus.INACTIVE,
-            roles=request.roles if request.roles else ["USER"]
-        )
-
-        created_user = self.user_repo.create_user(user)
-        logger.info(f"Created user: {created_user.user_id}")
-        return created_user
 
     def get_user(self, user_id: str) -> UserProfile:
         """

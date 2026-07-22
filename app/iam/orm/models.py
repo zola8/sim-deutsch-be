@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship, mapped_column
 from sqlalchemy.sql import func
 
 from app.core.database import Base
-from app.iam.schema_enums import UserStatus, CredentialType
+from app.iam.api.schema_enums import UserStatus, CredentialType
 
 
 class UserModel(Base):

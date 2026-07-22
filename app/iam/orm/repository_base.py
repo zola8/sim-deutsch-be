@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List
 
-from app.iam.schema_enums import CredentialType
-from app.iam.schema_user_profile import UserProfile
-from app.iam.schema_user_profile_credential import UserProfileCredential
+from app.iam.api.schema_enums import CredentialType
+from app.iam.api.schema_user_profile import UserProfile
+from app.iam.api.schema_user_profile_credential import UserProfileCredential
 
 
 class UserRepository(ABC):

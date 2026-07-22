@@ -5,10 +5,10 @@ from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.iam.models import CredentialModel
-from app.iam.repository_base import CredentialRepository
-from app.iam.schema_enums import CredentialType
-from app.iam.schema_user_profile_credential import UserProfileCredential
+from app.iam.orm.models import CredentialModel
+from app.iam.orm.repository_base import CredentialRepository
+from app.iam.api.schema_enums import CredentialType
+from app.iam.api.schema_user_profile_credential import UserProfileCredential
 
 logger = logging.getLogger(__name__)
 
