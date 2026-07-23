@@ -8,8 +8,8 @@ from app.core.database import Base
 from app.iam.api.schema_enums import CredentialType, UserStatus
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
-from app.iam.orm.repository_sql_credential import SQLAlchemyCredentialRepository
-from app.iam.orm.repository_sql_user_profile import SQLAlchemyUserRepository
+from app.iam.orm.sql_credential_repo import SQLAlchemyCredentialRepository
+from app.iam.orm.sql_user_profile_repo import SQLAlchemyUserRepository
 
 
 @pytest.fixture

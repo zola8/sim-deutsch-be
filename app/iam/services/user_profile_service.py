@@ -2,9 +2,9 @@ import logging
 from typing import List, Optional
 
 from app.iam.exceptions import UserAlreadyExistsError, UserNotFoundError
-from app.iam.orm.repository_base import UserRepository
 from app.iam.api.schema_user_management import UserUpdateRequest
 from app.iam.api.schema_user_profile import UserProfile
+from app.iam.orm.base import UserRepository
 
 logger = logging.getLogger(__name__)
 

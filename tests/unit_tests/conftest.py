@@ -11,7 +11,7 @@ from app.iam.api.schema_enums import CredentialType, UserStatus
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
 from app.iam.exceptions import UserNotFoundError, UserAlreadyExistsError
-from app.iam.orm.repository_in_memory import InMemoryCredentialRepository, InMemoryUserRepository
+from app.iam.orm.in_memory_db import InMemoryCredentialRepository, InMemoryUserRepository
 
 
 @pytest.fixture

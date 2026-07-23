@@ -5,8 +5,8 @@ from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.iam.orm.base import CredentialRepository
 from app.iam.orm.models import CredentialModel
-from app.iam.orm.repository_base import CredentialRepository
 from app.iam.api.schema_enums import CredentialType
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
 

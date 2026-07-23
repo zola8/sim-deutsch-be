@@ -7,7 +7,6 @@ import pytest
 from app.iam.api.schema_enums import UserStatus, CredentialType
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
-from app.iam.orm.repository_in_memory import InMemoryCredentialRepository, InMemoryUserRepository
 
 
 

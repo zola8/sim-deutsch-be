@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import PasswordHasher
-from app.iam.orm.repository_base import UserRepository, CredentialRepository
-from app.iam.orm.repository_sql_credential import SQLAlchemyCredentialRepository
-from app.iam.orm.repository_sql_user_profile import SQLAlchemyUserRepository
-from app.iam.service_auth import AuthService
-from app.iam.service_user import UserService
+from app.iam.orm.base import UserRepository, CredentialRepository
+from app.iam.orm.sql_credential_repo import SQLAlchemyCredentialRepository
+from app.iam.orm.sql_user_profile_repo import SQLAlchemyUserRepository
+from app.iam.services.authentication_service import AuthService
+from app.iam.services.user_profile_service import UserService
 
 
 # --- Repository Dependencies ---

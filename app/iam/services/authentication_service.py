@@ -4,11 +4,11 @@ from datetime import datetime, timezone
 
 from app.core.security import PasswordHasher
 from app.iam.exceptions import UserAlreadyExistsError, AuthenticationError, UserNotFoundError
-from app.iam.orm.repository_base import UserRepository, CredentialRepository
 from app.iam.api.schema_authentication import RegisterWithPasswordRequest, LoginWithPasswordRequest
 from app.iam.api.schema_enums import UserStatus, CredentialType
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
+from app.iam.orm.base import UserRepository, CredentialRepository
 
 logger = logging.getLogger(__name__)
 

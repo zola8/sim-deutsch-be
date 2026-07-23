@@ -1,9 +1,9 @@
 from typing import Optional, List
 
-from app.iam.orm.repository_base import UserRepository, CredentialRepository
 from app.iam.api.schema_enums import CredentialType
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
+from app.iam.orm.base import UserRepository, CredentialRepository
 
 
 class InMemoryUserRepository(UserRepository):
