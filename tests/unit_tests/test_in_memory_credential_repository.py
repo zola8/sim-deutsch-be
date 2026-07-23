@@ -34,11 +34,11 @@ class TestCreateCredential:
 class TestGetCredential:
     def test_get_credential_found(self, credential_repo, sample_credential):
         created = credential_repo.create_credential(sample_credential)
-        result = credential_repo.get_credential(created.id)
+        result = credential_repo.get_credential_by_id(created.id)
         assert result == created
 
     def test_get_credential_not_found_returns_none(self, credential_repo):
-        result = credential_repo.get_credential(999)
+        result = credential_repo.get_credential_by_id(999)
         assert result is None
 
 
@@ -86,7 +86,7 @@ class TestUpdateCredential:
 
         assert result.is_verified is False
         assert result.last_used_at is not None
-        assert credential_repo.get_credential(created.id).is_verified is False
+        assert credential_repo.get_credential_by_id(created.id).is_verified is False
 
     def test_update_credential_not_found_raises_error(self, credential_repo, sample_credential):
         sample_credential.id = 999
@@ -99,7 +99,7 @@ class TestDeleteCredential:
         created = credential_repo.create_credential(sample_credential)
         result = credential_repo.delete_credential(created.id)
         assert result is True
-        assert credential_repo.get_credential(created.id) is None
+        assert credential_repo.get_credential_by_id(created.id) is None
 
     def test_delete_credential_not_found_returns_false(self, credential_repo):
         result = credential_repo.delete_credential(999)

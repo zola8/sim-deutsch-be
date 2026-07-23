@@ -1,7 +1,6 @@
-from datetime import datetime
 from typing import List
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr
 
 from app.iam.api.schema_enums import UserStatus
 
@@ -11,5 +10,5 @@ class UserProfile(BaseModel):
     username: str
     email: EmailStr
     status: UserStatus = UserStatus.INACTIVE
-    created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
+    created_at: str
     roles: List[str] = ["USER"]

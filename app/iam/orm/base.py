@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List
 
-from app.iam.api.schema_enums import CredentialType
+from app.iam.api.schema_enums import CredentialType, UserStatus
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
 
@@ -15,7 +15,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def get_user(self, user_id: str) -> Optional[UserProfile]:
+    def get_user_by_id(self, user_id: str) -> Optional[UserProfile]:
         """Get user by user_id."""
         pass
 
@@ -40,6 +40,11 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
+    def update_user_status(self, user_id: str, status: UserStatus) -> UserProfile:
+        """Update an existing user profile."""
+        pass
+
+    @abstractmethod
     def delete_user(self, user_id: str) -> bool:
         """Delete a user by user_id. Returns True if deleted, False if not found."""
         pass
@@ -54,7 +59,7 @@ class CredentialRepository(ABC):
         pass
 
     @abstractmethod
-    def get_credential(self, credential_id: int) -> Optional[UserProfileCredential]:
+    def get_credential_by_id(self, credential_id: int) -> Optional[UserProfileCredential]:
         """Get credential by ID."""
         pass
 

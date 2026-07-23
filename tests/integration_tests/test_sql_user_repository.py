@@ -12,7 +12,7 @@ class TestCreateUser:
         db_session.commit()  # Explicit commit for test
 
         # Verify by querying directly
-        result = user_repo.get_user(sample_user.user_id)
+        result = user_repo.get_user_by_id(sample_user.user_id)
         assert result is not None
         assert result.user_id == sample_user.user_id
         assert result.username == sample_user.username
@@ -29,7 +29,7 @@ class TestCreateUser:
         user_repo.create_user(user)
         db_session.commit()
 
-        result = user_repo.get_user(user.user_id)
+        result = user_repo.get_user_by_id(user.user_id)
         assert result.roles == ["USER", "ADMIN"]
 
 
@@ -38,13 +38,13 @@ class TestGetUser:
         user_repo.create_user(sample_user)
         db_session.commit()
 
-        result = user_repo.get_user(sample_user.user_id)
+        result = user_repo.get_user_by_id(sample_user.user_id)
 
         # Compare everything except created_at
         assert result.model_dump(exclude={"created_at"}) == sample_user.model_dump(exclude={"created_at"})
 
     def test_get_user_not_found_returns_none(self, user_repo):
-        result = user_repo.get_user("nonexistent")
+        result = user_repo.get_user_by_id("nonexistent")
         assert result is None
 
 
@@ -100,7 +100,7 @@ class TestUpdateUser:
         user_repo.update_user(updated)
         db_session.commit()
 
-        result = user_repo.get_user(sample_user.user_id)
+        result = user_repo.get_user_by_id(sample_user.user_id)
         assert result.username == "newname"
         assert result.status == UserStatus.ACTIVE
 
@@ -118,7 +118,7 @@ class TestDeleteUser:
         db_session.commit()
 
         assert result is True
-        assert user_repo.get_user(sample_user.user_id) is None
+        assert user_repo.get_user_by_id(sample_user.user_id) is None
 
     def test_delete_user_not_found_returns_false(self, user_repo, db_session):
         assert user_repo.delete_user("nope") is False

@@ -1,4 +1,11 @@
+import os
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class AuthConfig(BaseSettings):
+    frontend_base_url: str
+    token_expire_minutes: int
+    # TODO later - support_email: str
 
 
 class Settings(BaseSettings):
@@ -19,6 +26,13 @@ class Settings(BaseSettings):
     LOG_FORMAT: str = "dev"  # Options: "dev" or "prod" (JSON)
 
     DATABASE_URL: str = "sqlite:///./sim_deutsch.db"
+
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "")
+
+    auth_config: AuthConfig = AuthConfig(
+        frontend_base_url="http://localhost:8080",
+        token_expire_minutes=10,
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

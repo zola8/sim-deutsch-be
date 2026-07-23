@@ -6,9 +6,10 @@ from typing import Optional, List
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.iam.api.schema_enums import UserStatus
+from app.iam.api.schema_user_profile import UserProfile
 from app.iam.orm.base import UserRepository
 from app.iam.orm.models import UserModel
-from app.iam.api.schema_user_profile import UserProfile
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class SQLAlchemyUserRepository(UserRepository):
         logger.debug(f"Created user: {user.user_id}")
         return self._to_schema(model)
 
-    def get_user(self, user_id: str) -> Optional[UserProfile]:
+    def get_user_by_id(self, user_id: str) -> Optional[UserProfile]:
         model = self.db.execute(
             select(UserModel).where(user_id == UserModel.user_id)
         ).scalar_one_or_none()
@@ -64,6 +65,16 @@ class SQLAlchemyUserRepository(UserRepository):
 
         self.db.flush()
         logger.debug(f"Updated user: {user.user_id}")
+        return self._to_schema(model)
+
+    def update_user_status(self, user_id: str, status: UserStatus) -> UserProfile:
+        model = self.db.execute(
+            select(UserModel).where(user_id == UserModel.user_id)
+        ).scalar_one_or_none()
+        model.status = status
+
+        self.db.flush()
+        logger.debug(f"Updated user: {user_id}")
         return self._to_schema(model)
 
     def delete_user(self, user_id: str) -> bool:

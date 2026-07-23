@@ -29,7 +29,7 @@ class SQLAlchemyCredentialRepository(CredentialRepository):
         logger.debug(f"Created credential {model.id} for user {credential.user_id}")
         return credential
 
-    def get_credential(self, credential_id: int) -> Optional[UserProfileCredential]:
+    def get_credential_by_id(self, credential_id: int) -> Optional[UserProfileCredential]:
         model = self.db.execute(
             select(CredentialModel).where(credential_id == CredentialModel.id)
         ).scalar_one_or_none()

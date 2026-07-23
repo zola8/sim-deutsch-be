@@ -12,7 +12,7 @@ router = APIRouter()
 
 @router.get("/users/{user_id}", response_model=UserProfile)
 def get_user(user_id: str, user_service: UserServiceDep):
-    return user_service.get_user(user_id)
+    return user_service.get_user_by_id(user_id)
 
 
 @router.get("/users", response_model=list[UserProfile])
@@ -42,6 +42,16 @@ def register(request: RegisterWithPasswordRequest, auth_service: AuthServiceDep)
         "user_id": user.user_id,
         "status": user.status,
         "message": "Registration successful"
+    }
+
+
+@router.get("/auth/activate")
+def activate_account(activation_token: str, auth_service: AuthServiceDep):
+    user = auth_service.activate_user(activation_token)
+    return {
+        "user_id": user.user_id,
+        "status": user.status,
+        "message": "Account activated successfully"
     }
 
 

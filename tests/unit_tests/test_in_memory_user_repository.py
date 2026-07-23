@@ -7,7 +7,7 @@ class TestCreateUser:
     def test_create_user_success(self, user_repo, sample_user):
         created = user_repo.create_user(sample_user)
         assert created == sample_user
-        assert user_repo.get_user(sample_user.user_id) == sample_user
+        assert user_repo.get_user_by_id(sample_user.user_id) == sample_user
 
     def test_create_user_duplicate_raises_error(self, user_repo, sample_user):
         user_repo.create_user(sample_user)
@@ -18,11 +18,11 @@ class TestCreateUser:
 class TestGetUser:
     def test_get_user_found(self, user_repo, sample_user):
         user_repo.create_user(sample_user)
-        result = user_repo.get_user(sample_user.user_id)
+        result = user_repo.get_user_by_id(sample_user.user_id)
         assert result == sample_user
 
     def test_get_user_not_found_returns_none(self, user_repo):
-        result = user_repo.get_user("nonexistent-id")
+        result = user_repo.get_user_by_id("nonexistent-id")
         assert result is None
 
 
@@ -74,7 +74,7 @@ class TestUpdateUser:
 
         assert result.username == "updated-user"
         assert result.status == UserStatus.ACTIVE
-        assert user_repo.get_user(sample_user.user_id).username == "updated-user"
+        assert user_repo.get_user_by_id(sample_user.user_id).username == "updated-user"
 
     def test_update_user_not_found_raises_error(self, user_repo, sample_user):
         with pytest.raises(ValueError, match="not found"):
@@ -86,7 +86,7 @@ class TestDeleteUser:
         user_repo.create_user(sample_user)
         result = user_repo.delete_user(sample_user.user_id)
         assert result is True
-        assert user_repo.get_user(sample_user.user_id) is None
+        assert user_repo.get_user_by_id(sample_user.user_id) is None
 
     def test_delete_user_not_found_returns_false(self, user_repo):
         result = user_repo.delete_user("not-exist-id")

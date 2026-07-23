@@ -35,12 +35,12 @@ class TestGetCredential:
         created = credential_repo.create_credential(sample_credential)
         db_session.commit()
 
-        result = credential_repo.get_credential(created.id)
+        result = credential_repo.get_credential_by_id(created.id)
         assert result.id == created.id
         assert result.credential_type == CredentialType.PASSWORD
 
     def test_get_credential_not_found(self, credential_repo):
-        assert credential_repo.get_credential(999) is None
+        assert credential_repo.get_credential_by_id(999) is None
 
 
 class TestGetCredentialsByUserId:
@@ -79,7 +79,7 @@ class TestUpdateCredential:
         credential_repo.update_credential(updated)
         db_session.commit()
 
-        result = credential_repo.get_credential(created.id)
+        result = credential_repo.get_credential_by_id(created.id)
         assert result.is_verified is False
 
     def test_update_credential_not_found_raises(self, credential_repo, sample_credential):
@@ -95,7 +95,7 @@ class TestDeleteCredential:
 
         assert credential_repo.delete_credential(created.id) is True
         db_session.commit()
-        assert credential_repo.get_credential(created.id) is None
+        assert credential_repo.get_credential_by_id(created.id) is None
 
     def test_delete_credential_not_found(self, credential_repo, db_session):
         assert credential_repo.delete_credential(999) is False

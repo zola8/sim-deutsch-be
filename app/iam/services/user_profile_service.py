@@ -20,7 +20,7 @@ class UserService:
         Get user by ID.
         Raises UserNotFoundError if not found.
         """
-        user = self.user_repo.get_user(user_id)
+        user = self.user_repo.get_user_by_id(user_id)
         if not user:
             logger.warning(f"User not found: {user_id}")
             raise UserNotFoundError(user_id=user_id)
@@ -68,7 +68,7 @@ class UserService:
         Delete user by ID.
         Returns True if deleted, False if not found.
         """
-        user = self.user_repo.get_user(user_id)
+        user = self.user_repo.get_user_by_id(user_id)
         if not user:
             logger.warning(f"Attempted to delete non-existent user: {user_id}")
             return False

@@ -53,7 +53,7 @@ class TestOneToManyRelationship:
         user, credentials = user_with_multiple_credentials
 
         # Verify user exists
-        fetched_user = user_repo.get_user(user.user_id)
+        fetched_user = user_repo.get_user_by_id(user.user_id)
         assert fetched_user is not None
         assert fetched_user.user_id == user.user_id
 
@@ -149,7 +149,7 @@ class TestCascadeBehavior:
         assert deleted_count == 2
 
         # Verify user still exists
-        fetched_user = user_repo.get_user(user.user_id)
+        fetched_user = user_repo.get_user_by_id(user.user_id)
         assert fetched_user is not None
         assert fetched_user.user_id == user.user_id
 
@@ -197,10 +197,10 @@ class TestRelationshipIntegrity:
         credential_repo.create_credential(cred)
 
         # Verify relationship
-        fetched_cred = credential_repo.get_credential(cred.id)
+        fetched_cred = credential_repo.get_credential_by_id(cred.id)
         assert fetched_cred.user_id == user.user_id
 
-        fetched_user = user_repo.get_user(user.user_id)
+        fetched_user = user_repo.get_user_by_id(user.user_id)
         assert fetched_user is not None
 
     def test_updating_user_does_not_affect_credentials(self, user_repo, credential_repo,
@@ -225,6 +225,6 @@ class TestRelationshipIntegrity:
         credential_repo.update_credential(updated_cred)
 
         # Verify user is unchanged
-        fetched_user = user_repo.get_user(user.user_id)
+        fetched_user = user_repo.get_user_by_id(user.user_id)
         assert fetched_user.username == user.username
         assert fetched_user.email == user.email

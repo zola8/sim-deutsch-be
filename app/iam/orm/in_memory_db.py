@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from app.iam.api.schema_enums import CredentialType
+from app.iam.api.schema_enums import CredentialType, UserStatus
 from app.iam.api.schema_user_profile import UserProfile
 from app.iam.api.schema_user_profile_credential import UserProfileCredential
 from app.iam.orm.base import UserRepository, CredentialRepository
@@ -18,7 +18,7 @@ class InMemoryUserRepository(UserRepository):
         self._users[user.user_id] = user
         return user
 
-    def get_user(self, user_id: str) -> Optional[UserProfile]:
+    def get_user_by_id(self, user_id: str) -> Optional[UserProfile]:
         return self._users.get(user_id)
 
     def get_user_by_email(self, email: str) -> Optional[UserProfile]:
@@ -41,6 +41,12 @@ class InMemoryUserRepository(UserRepository):
             raise ValueError(f"User with id {user.user_id} not found")
         self._users[user.user_id] = user
         return user
+
+    def update_user_status(self, user_id: str, status: UserStatus) -> UserProfile:
+        if user_id not in self._users:
+            raise ValueError(f"User with id {user_id} not found")
+        self._users[user_id]['status'] = status
+        return self._users[user_id]
 
     def delete_user(self, user_id: str) -> bool:
         if user_id in self._users:
@@ -65,7 +71,7 @@ class InMemoryCredentialRepository(CredentialRepository):
         self._credentials[credential.id] = credential
         return credential
 
-    def get_credential(self, credential_id: int) -> Optional[UserProfileCredential]:
+    def get_credential_by_id(self, credential_id: int) -> Optional[UserProfileCredential]:
         return self._credentials.get(credential_id)
 
     def get_credentials_by_user_id(self, user_id: str) -> List[UserProfileCredential]:
@@ -86,6 +92,7 @@ class InMemoryCredentialRepository(CredentialRepository):
             raise ValueError(f"Credential with id {credential.id} not found")
         self._credentials[credential.id] = credential
         return credential
+
 
     def delete_credential(self, credential_id: int) -> bool:
         if credential_id in self._credentials:

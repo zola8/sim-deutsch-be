@@ -3,12 +3,15 @@ from typing import Annotated
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import PasswordHasher
 from app.iam.orm.base import UserRepository, CredentialRepository
 from app.iam.orm.sql_credential_repo import SQLAlchemyCredentialRepository
 from app.iam.orm.sql_user_profile_repo import SQLAlchemyUserRepository
 from app.iam.services.authentication_service import AuthService
+from app.iam.services.email_service import EmailService
+from app.iam.services.jwt_token_service import TokenService
 from app.iam.services.user_profile_service import UserService
 
 
@@ -45,7 +48,10 @@ def get_auth_service(
     return AuthService(
         user_repo=user_repo,
         credential_repo=credential_repo,
-        password_hasher=password_hasher
+        password_hasher=password_hasher,
+        token_service=TokenService(settings.JWT_SECRET_KEY, expire_minutes=settings.auth_config.token_expire_minutes),
+        email_service=EmailService(),
+        auth_config=settings.auth_config
     )
 
 

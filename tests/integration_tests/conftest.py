@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 import pytest
 from sqlalchemy import create_engine
@@ -56,7 +56,7 @@ def sample_user():
         username="testuser",
         email="test@example.com",
         status=UserStatus.INACTIVE,
-        created_at=datetime.now(timezone.utc).isoformat(),
+        created_at=datetime.now().isoformat(),
         roles=["USER"]
     )
 
@@ -68,5 +68,5 @@ def sample_credential():
         credential_type=CredentialType.PASSWORD,
         credential_identifier="hashed_pw",
         is_verified=True,
-        created_at=datetime.now(timezone.utc).isoformat()
+        created_at=datetime.now().isoformat()
     )
