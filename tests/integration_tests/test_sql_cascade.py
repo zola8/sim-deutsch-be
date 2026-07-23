@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 
-from app.iam import UserProfile, UserProfileCredential, CredentialType
+from app.iam.api.schema_enums import CredentialType
+from app.iam.api.schema_user_profile import UserProfile
+from app.iam.api.schema_user_profile_credential import UserProfileCredential
 
 
 def test_deleting_user_cascades_to_credentials(

@@ -2,7 +2,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from app.iam import UserProfileCredential, CredentialType
+from app.iam.api.schema_enums import CredentialType
+from app.iam.api.schema_user_profile_credential import UserProfileCredential
 
 
 class TestCreateCredential:

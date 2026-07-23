@@ -1,6 +1,6 @@
 import pytest
 
-from app.iam import UserStatus
+from app.iam.api.schema_enums import UserStatus
 
 
 class TestCreateUser:

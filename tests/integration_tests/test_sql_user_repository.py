@@ -2,7 +2,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from app.iam import UserProfile, UserStatus
+from app.iam.api.schema_enums import UserStatus
+from app.iam.api.schema_user_profile import UserProfile
 
 
 class TestCreateUser:

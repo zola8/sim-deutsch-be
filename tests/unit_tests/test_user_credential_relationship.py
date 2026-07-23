@@ -4,18 +4,11 @@ from datetime import datetime, timezone
 
 import pytest
 
-from app.iam import InMemoryUserRepository, InMemoryCredentialRepository, UserProfile, UserStatus, \
-    UserProfileCredential, CredentialType
+from app.iam.api.schema_enums import UserStatus, CredentialType
+from app.iam.api.schema_user_profile import UserProfile
+from app.iam.api.schema_user_profile_credential import UserProfileCredential
+from app.iam.orm.repository_in_memory import InMemoryCredentialRepository, InMemoryUserRepository
 
-
-@pytest.fixture
-def user_repo():
-    return InMemoryUserRepository()
-
-
-@pytest.fixture
-def credential_repo():
-    return InMemoryCredentialRepository()
 
 
 @pytest.fixture

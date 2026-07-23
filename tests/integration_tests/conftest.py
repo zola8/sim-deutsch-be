@@ -5,14 +5,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.core.database import Base
-from app.iam import (
-    SQLAlchemyUserRepository,
-    UserProfile,
-    UserStatus,
-    SQLAlchemyCredentialRepository,
-    UserProfileCredential,
-    CredentialType
-)
+from app.iam.api.schema_enums import CredentialType, UserStatus
+from app.iam.api.schema_user_profile import UserProfile
+from app.iam.api.schema_user_profile_credential import UserProfileCredential
+from app.iam.orm.repository_sql_credential import SQLAlchemyCredentialRepository
+from app.iam.orm.repository_sql_user_profile import SQLAlchemyUserRepository
 
 
 @pytest.fixture

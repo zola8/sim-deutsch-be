@@ -1,4 +1,4 @@
-from app.iam import UserNotFoundError, UserAlreadyExistsError
+from app.iam.exceptions import UserNotFoundError, UserAlreadyExistsError
 
 
 class TestUserNotFoundError:
